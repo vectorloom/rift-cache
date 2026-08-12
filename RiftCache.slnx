@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RiftCache.Client/RiftCache.Client.csproj" />
+    <Project Path="src/RiftCache/RiftCache.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RiftCache.Client.Tests/RiftCache.Client.Tests.csproj" />
+    <Project Path="tests/RiftCache.Tests/RiftCache.Tests.csproj" />
+  </Folder>
+</Solution>

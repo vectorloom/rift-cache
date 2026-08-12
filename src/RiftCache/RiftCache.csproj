@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <RootNamespace>RiftCache</RootNamespace>
+    <UserSecretsId>riftcache-service</UserSecretsId>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="RiftCache.Tests" />
+  </ItemGroup>
+
+</Project>
