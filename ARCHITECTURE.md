@@ -16,7 +16,7 @@ public interface ISecretProvider
 ```
 
 Implementations:
-- `EnvironmentSecretProvider` — **default**, reads from environment variables / mounted files. Zero cloud dependency. This is what self-hosters use.
+- `EnvironmentSecretProvider` — **default**, reads through `IConfiguration`: environment variables, user secrets, and mounted-file secrets (a `{KEY}_FILE` entry pointing at a file, the Docker/Kubernetes secrets-mount convention) all resolve the same way. Zero cloud dependency. This is what self-hosters use. Multi-tenant secret names nest with `__` (e.g. `RIFTCACHE_API_KEY__{TENANT}`), matching `IConfiguration`'s own environment-variable nesting convention.
 - `AzureKeyVaultSecretProvider` — optional package, uses Managed Identity.
 - `AwsSecretsManagerProvider` — community-contributed.
 - `GcpSecretManagerProvider` — community-contributed.
@@ -26,11 +26,13 @@ Implementations:
 ```csharp
 public interface IPersistenceProvider
 {
-    Task PersistAsync(string key, byte[] value, CancellationToken token = default);
-    Task<byte[]?> LoadAsync(string key, CancellationToken token = default);
-    Task DeleteAsync(string key, CancellationToken token = default);
+    Task PersistAsync(string key, CacheEntry entry, CancellationToken token = default);
+    Task<CacheEntry?> LoadAsync(string key, CancellationToken token = default);
+    Task RemoveAsync(string key, CancellationToken token = default);
 }
 ```
+
+`CacheEntry` carries the value alongside its absolute/sliding expiration, so a real provider can restore TTLs across a restart or replica — not just raw bytes.
 
 Implementations:
 - `NullPersistenceProvider` — **default**, in-memory only, no persistence. Fine for local dev and low-stakes caching.
