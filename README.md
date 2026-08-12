@@ -36,7 +36,7 @@ RiftCache is a distributed cache built to slot into infrastructure you already r
 ## Quick Start (Self-Hosted)
 
 ```bash
-docker run -p 8080:8080 -e RIFTCACHE_API_KEY=dev-key riftcache/riftcache:latest
+docker run --name riftcache -p 8080:8080 -e RIFTCACHE_API_KEY=dev-key riftcache/riftcache:latest
 ```
 
 No published image yet — until there is, build it from source (below). The image is a
@@ -70,7 +70,7 @@ that runs as a non-root user. Build context must be the repo root, since it need
 
 ```bash
 docker build -f deployment/docker/Dockerfile -t riftcache/riftcache:latest .
-docker run -p 8080:8080 -e RIFTCACHE_API_KEY=dev-key riftcache/riftcache:latest
+docker run --name riftcache -p 8080:8080 -e RIFTCACHE_API_KEY=dev-key riftcache/riftcache:latest
 
 # or, via compose:
 docker compose -f deployment/docker/docker-compose.yml up --build
@@ -80,7 +80,7 @@ docker compose -f deployment/docker/docker-compose.yml up --build
 
 ```bash
 podman build -f deployment/docker/Dockerfile -t riftcache/riftcache:latest .
-podman run -p 8080:8080 -e RIFTCACHE_API_KEY=dev-key riftcache/riftcache:latest
+podman run --name riftcache -p 8080:8080 -e RIFTCACHE_API_KEY=dev-key riftcache/riftcache:latest
 ```
 
 For compose, `podman compose -f deployment/docker/docker-compose.yml up --build` *should* work the

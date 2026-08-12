@@ -9,6 +9,7 @@ services:
       context: ../..
       dockerfile: deployment/docker/Dockerfile
     image: riftcache/riftcache:dev
+    container_name: riftcache
     ports:
       - "8080:8080"
     environment:
