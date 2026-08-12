@@ -117,6 +117,6 @@ Keep every team's option to run their own dedicated instance instead (per the is
 
 ## Related Docs
 
-- [ARCHITECTURE_NOTES.md](ARCHITECTURE_NOTES.md) — provider abstraction interfaces referenced throughout this guide
+- [ARCHITECTURE.md](ARCHITECTURE.md) — provider abstraction interfaces referenced throughout this guide
 - [ROADMAP.md](ROADMAP.md) — where multi-tenancy hardening and enterprise features sit in the project timeline
 - [CONTRIBUTING.md](CONTRIBUTING.md) — how to contribute a new cloud provider if your org needs one not yet supported

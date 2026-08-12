@@ -72,7 +72,7 @@ RiftCache Service (container — runs anywhere)
    └─ OpenTelemetry        → any exporter (App Insights, CloudWatch, Cloud Monitoring, etc.)
 ```
 
-The service core has no direct dependency on any single cloud's SDK. Cloud integrations live behind three provider interfaces — see [ARCHITECTURE_NOTES.md](ARCHITECTURE_NOTES.md) for the interface definitions and how to implement a new provider.
+The service core has no direct dependency on any single cloud's SDK. Cloud integrations live behind three provider interfaces — see [ARCHITECTURE.md](ARCHITECTURE.md) for the interface definitions and how to implement a new provider.
 
 ---
 
@@ -80,7 +80,7 @@ The service core has no direct dependency on any single cloud's SDK. Cloud integ
 
 | Doc | Purpose |
 |---|---|
-| [ARCHITECTURE_NOTES.md](ARCHITECTURE_NOTES.md) | Provider abstraction pattern, rename map, multi-cloud folder layout |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Provider abstraction pattern, deployment layout, multi-tenancy design |
 | [ENTERPRISE_DEPLOYMENT.md](ENTERPRISE_DEPLOYMENT.md) | Running RiftCache as shared, centrally-owned infrastructure for multiple teams |
 | [ROADMAP.md](ROADMAP.md) | Phased plan — core, Azure reference, AWS/GCP providers, enterprise features |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to add a cloud provider, submit PRs, project conventions |
