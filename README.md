@@ -83,10 +83,16 @@ podman build -f deployment/docker/Dockerfile -t riftcache/riftcache:latest .
 podman run --name riftcache -p 8080:8080 -e RIFTCACHE_API_KEY=dev-key riftcache/riftcache:latest
 ```
 
-For compose, `podman compose -f deployment/docker/docker-compose.yml up --build` *should* work the
-same way, but some `podman-compose` versions (1.6.0 confirmed) silently drop a nested
-`dockerfile:` path and fail with "no Containerfile or Dockerfile ... found" — if you hit that,
-use the `podman build` / `podman run` commands above instead, or upgrade `podman-compose`.
+**On Windows**, `podman compose -f deployment/docker/docker-compose.yml up --build` currently
+fails with "no Containerfile or Dockerfile ... found", even though the compose file is correct —
+confirmed as an upstream `podman-compose` bug (1.6.0, the latest release as of this writing), not
+specific to this project or to a nested `dockerfile:` path. `podman-compose` resolves the build
+context to an absolute path (`D:\...`) before checking whether it's a remote git URL, but that
+check (`is_context_git_url`, via `urllib.parse.urlparse`) treats the drive letter before the `:`
+as a URL scheme, so it misidentifies any local Windows path as remote and skips local Dockerfile
+resolution entirely — silently building with no `-f` at all. This will misfire for *any*
+`podman-compose` build on Windows, not just this one. Use the `podman build` / `podman run`
+commands above instead until upstream fixes it.
 
 Either way, `RIFTCACHE_API_KEY` is read from the container's environment at runtime by
 `EnvironmentSecretProvider` — it's never baked into the image. [deployment/docker/docker-compose.yml](deployment/docker/docker-compose.yml)
