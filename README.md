@@ -39,6 +39,10 @@ RiftCache is a distributed cache built to slot into infrastructure you already r
 docker run -p 8080:8080 -e RIFTCACHE_API_KEY=dev-key riftcache/riftcache:latest
 ```
 
+No published image yet — until there is, build it from source (below). The image is a
+multi-stage build of just `src/RiftCache`, so it stays cloud-agnostic: no Azure/AWS/GCP
+SDKs baked in, per [ARCHITECTURE.md](ARCHITECTURE.md).
+
 ```csharp
 services.AddRiftCache(options =>
 {
@@ -54,6 +58,40 @@ await cache.SetAsync("key", value, new DistributedCacheEntryOptions
 ```
 
 No Key Vault, no managed identity, no tenant setup required to get started. Persistence defaults to in-memory only unless you configure a storage provider.
+
+### Building From Source (Docker / Podman)
+
+The Dockerfile ([deployment/docker/Dockerfile](deployment/docker/Dockerfile)) builds and publishes
+`src/RiftCache` in one stage, then copies just the published output into a slim runtime image
+that runs as a non-root user. Build context must be the repo root, since it needs
+`Directory.Build.props` alongside the project.
+
+**Docker:**
+
+```bash
+docker build -f deployment/docker/Dockerfile -t riftcache/riftcache:latest .
+docker run -p 8080:8080 -e RIFTCACHE_API_KEY=dev-key riftcache/riftcache:latest
+
+# or, via compose:
+docker compose -f deployment/docker/docker-compose.yml up --build
+```
+
+**Podman** (drop-in — same Dockerfile, same flags):
+
+```bash
+podman build -f deployment/docker/Dockerfile -t riftcache/riftcache:latest .
+podman run -p 8080:8080 -e RIFTCACHE_API_KEY=dev-key riftcache/riftcache:latest
+```
+
+For compose, `podman compose -f deployment/docker/docker-compose.yml up --build` *should* work the
+same way, but some `podman-compose` versions (1.6.0 confirmed) silently drop a nested
+`dockerfile:` path and fail with "no Containerfile or Dockerfile ... found" — if you hit that,
+use the `podman build` / `podman run` commands above instead, or upgrade `podman-compose`.
+
+Either way, `RIFTCACHE_API_KEY` is read from the container's environment at runtime by
+`EnvironmentSecretProvider` — it's never baked into the image. [deployment/docker/docker-compose.yml](deployment/docker/docker-compose.yml)
+defaults it to `dev-key` for local convenience; override it by exporting `RIFTCACHE_API_KEY`
+before running compose, or with a `.env` file next to it.
 
 ---
 

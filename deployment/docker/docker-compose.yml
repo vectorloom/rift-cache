@@ -1,0 +1,15 @@
+# Local dev: `docker compose -f deployment/docker/docker-compose.yml up --build`
+# or, with Podman:        `podman compose -f deployment/docker/docker-compose.yml up --build`
+#
+# RIFTCACHE_API_KEY defaults to "dev-key" for zero-friction local dev. Override it by
+# exporting RIFTCACHE_API_KEY before running, or with a .env file next to this one.
+services:
+  riftcache:
+    build:
+      context: ../..
+      dockerfile: deployment/docker/Dockerfile
+    image: riftcache/riftcache:dev
+    ports:
+      - "8080:8080"
+    environment:
+      RIFTCACHE_API_KEY: ${RIFTCACHE_API_KEY:-dev-key}
