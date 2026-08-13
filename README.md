@@ -5,9 +5,9 @@
 RiftCache is an open-source, Redis-inspired distributed cache built for containerized .NET applications. It ships as a drop-in `IDistributedCache` implementation with a simple REST API, runs anywhere containers run, and is designed to scale from a single self-hosted instance to a multi-tenant enterprise deployment.
 
 - **Self-hosters**: one container, one API key, no cloud lock-in required.
-- **Enterprise teams**: multi-tenancy, pluggable secrets/persistence/observability providers, and reference deployments for Azure, with AWS and GCP on the roadmap.
+- **Enterprise teams**: multi-tenancy and pluggable secrets/persistence providers today. Cloud-specific implementations (Azure Key Vault, Blob Storage, etc.) and OpenTelemetry integration are designed for (see [ARCHITECTURE.md](ARCHITECTURE.md)) but not built yet — see [ROADMAP.md](ROADMAP.md) for status.
 
-> Reference deployment today: **Azure Container Apps**. Community contributions for **AWS (Fargate/ECS)** and **GCP (Cloud Run)** are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+> Reference deployment today: **Docker / Podman** — see [Building From Source](#building-from-source-docker--podman) below. Azure Container Apps, AWS (Fargate/ECS), and GCP (Cloud Run) reference deployments are planned, not built yet. Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
@@ -141,16 +141,21 @@ gets a `401`, since the server never sees a recognized `X-RiftCache-Api-Key` hea
 Application Code (IDistributedCache — no vendor-specific code)
         │
 RiftCache.Client (NuGet)
-        │  HTTP/JSON, retry + circuit breaker
+        │  HTTP/JSON
         ▼
 RiftCache Service (container — runs anywhere)
    ├─ In-memory store (ConcurrentDictionary, TTL + LRU)
-   ├─ ISecretProvider      → env vars | Azure Key Vault | AWS Secrets Manager | GCP Secret Manager
-   ├─ IPersistenceProvider → none (memory-only) | Azure Blob | S3 | GCS
-   └─ OpenTelemetry        → any exporter (App Insights, CloudWatch, Cloud Monitoring, etc.)
+   ├─ ISecretProvider      → env vars, user secrets, mounted files (today)
+   │                         Azure Key Vault | AWS Secrets Manager | GCP Secret Manager (planned)
+   ├─ IPersistenceProvider → none / memory-only (today)
+   │                         Azure Blob | S3 | GCS (planned)
+   └─ OpenTelemetry        → not wired in yet (planned)
 ```
 
-The service core has no direct dependency on any single cloud's SDK. Cloud integrations live behind three provider interfaces — see [ARCHITECTURE.md](ARCHITECTURE.md) for the interface definitions and how to implement a new provider.
+The service core has no direct dependency on any single cloud's SDK. Cloud integrations are designed
+to live behind provider interfaces — see [ARCHITECTURE.md](ARCHITECTURE.md) for the interface
+definitions and how to implement a new provider, and [ROADMAP.md](ROADMAP.md) for what's actually
+implemented today versus planned.
 
 ---
 
@@ -162,7 +167,6 @@ The service core has no direct dependency on any single cloud's SDK. Cloud integ
 | [ENTERPRISE_DEPLOYMENT.md](ENTERPRISE_DEPLOYMENT.md) | Running RiftCache as shared, centrally-owned infrastructure for multiple teams |
 | [ROADMAP.md](ROADMAP.md) | Phased plan — core, Azure reference, AWS/GCP providers, enterprise features |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to add a cloud provider, submit PRs, project conventions |
-| `docs/design/` | Detailed design docs (system architecture, API spec, implementation, deployment) — being updated to match the provider-abstraction model |
 
 ---
 
