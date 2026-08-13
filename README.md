@@ -64,6 +64,24 @@ await cache.SetAsync("key", value, new DistributedCacheEntryOptions
 
 No Key Vault, no managed identity, no tenant setup required to get started. Persistence defaults to in-memory only unless you configure a storage provider.
 
+### Installing RiftCache.Client
+
+Not on nuget.org yet — every merge to `main` publishes a prerelease build to GitHub Packages
+instead:
+
+```bash
+dotnet nuget add source https://nuget.pkg.github.com/vectorloom/index.json \
+  --name github-vectorloom \
+  --username YOUR_GITHUB_USERNAME \
+  --password YOUR_GITHUB_PAT \
+  --store-password-in-clear-text
+
+dotnet add package RiftCache.Client --prerelease
+```
+
+GitHub Packages requires a PAT with `read:packages` scope to *pull* NuGet packages, even from a
+public repo — that's a GitHub limitation, not something RiftCache adds on top.
+
 ### Building From Source (Docker / Podman)
 
 The Dockerfile ([deployment/docker/Dockerfile](deployment/docker/Dockerfile)) builds and publishes

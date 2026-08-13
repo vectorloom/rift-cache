@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <Version>0.1.0</Version>
+    <VersionPrefix>0.1.0</VersionPrefix>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -12,7 +12,7 @@
     <Product>RiftCache</Product>
     <Copyright>RiftCache Contributors</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/riftcache/riftcache</RepositoryUrl>
+    <RepositoryUrl>https://github.com/vectorloom/rift-cache</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
