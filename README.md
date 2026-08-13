@@ -39,6 +39,11 @@ RiftCache is a distributed cache built to slot into infrastructure you already r
 docker run --name riftcache -p 8080:8080 -e RIFTCACHE_API_KEY=dev-key riftcache/riftcache:latest
 ```
 
+> **Two different names, easy to mix up when testing manually:** `RIFTCACHE_API_KEY` above is the
+> **environment variable** the *server* reads at startup (via `EnvironmentSecretProvider`).
+> Callers authenticate with the **HTTP header** `X-RiftCache-Api-Key` instead — see the curl
+> example under [Building From Source](#building-from-source-docker--podman) below.
+
 No published image yet — until there is, build it from source (below). The image is a
 multi-stage build of just `src/RiftCache`, so it stays cloud-agnostic: no Azure/AWS/GCP
 SDKs baked in, per [ARCHITECTURE.md](ARCHITECTURE.md).
@@ -98,6 +103,17 @@ Either way, `RIFTCACHE_API_KEY` is read from the container's environment at runt
 `EnvironmentSecretProvider` — it's never baked into the image. [deployment/docker/docker-compose.yml](deployment/docker/docker-compose.yml)
 defaults it to `dev-key` for local convenience; override it by exporting `RIFTCACHE_API_KEY`
 before running compose, or with a `.env` file next to it.
+
+**Verify it's running:**
+
+```bash
+curl http://localhost:8080/healthz                                              # no auth needed
+curl -H "X-RiftCache-Api-Key: dev-key" http://localhost:8080/api/v1/cache/hello # 404 — nothing set yet, but the header is accepted
+```
+
+Note the header is `X-RiftCache-Api-Key`, **not** `RIFTCACHE_API_KEY` — that name is only the
+server-side env var above. Sending `RIFTCACHE_API_KEY` as a header (an easy mix-up in Postman)
+gets a `401`, since the server never sees a recognized `X-RiftCache-Api-Key` header at all.
 
 ---
 
