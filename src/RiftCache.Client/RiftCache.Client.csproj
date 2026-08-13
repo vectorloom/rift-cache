@@ -5,7 +5,6 @@
     <PackageId>RiftCache.Client</PackageId>
     <Description>IDistributedCache client for RiftCache — a self-hostable, Redis-inspired distributed cache for containerized .NET applications.</Description>
     <PackageTags>cache;distributed-cache;idistributedcache;redis</PackageTags>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
