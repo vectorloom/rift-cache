@@ -22,7 +22,12 @@ public static class RiftCacheServiceCollectionExtensions
             var options = sp.GetRequiredService<IOptions<RiftCacheOptions>>().Value;
             http.BaseAddress = new Uri(options.ServiceUrl.TrimEnd('/') + "/", UriKind.Absolute);
             http.DefaultRequestHeaders.Add(RiftCacheClient.ApiKeyHeaderName, options.ApiKey);
-        });
+        })
+            // Every RiftCacheClient call is idempotent -- GetAsync/RemoveAsync are inherently so,
+            // SetAsync unconditionally overwrites, and RefreshAsync (POST /refresh) re-refreshing
+            // the same sliding window has the same effect as once -- so retrying any of them on a
+            // transient failure is safe with the standard handler's default (verb-agnostic) policy.
+            .AddStandardResilienceHandler();
 
         services.AddTransient<IDistributedCache>(sp => sp.GetRequiredService<RiftCacheClient>());
 
