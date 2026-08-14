@@ -2,13 +2,13 @@
 
 ## Phase 1 — Core + Azure Reference (current focus)
 - [ ] Core service: in-memory store, TTL/expiration, string/hash/list operations
-- [ ] `RiftCache.Client` NuGet package (`IDistributedCache` implementation)
+- [x] `RiftCache.Client` NuGet package (`IDistributedCache` implementation)
 - [x] Provider interfaces: `ISecretProvider`, `IPersistenceProvider`, OpenTelemetry integration
-- [ ] Default providers: `EnvironmentSecretProvider`, `NullPersistenceProvider` (self-host path)
+- [x] Default providers: `EnvironmentSecretProvider`, `NullPersistenceProvider` (self-host path)
 - [ ] Azure reference providers: Key Vault, Blob Storage
 - [ ] Azure Container Apps reference deployment (Bicep) + Docker Compose for local dev
-- [ ] Single-tenant mode as default; multi-tenant mode as opt-in config
-- [ ] v0.1.0 release
+- [x] Single-tenant mode as default; multi-tenant mode as opt-in config
+- [x] v0.1.0 release
 
 ## Phase 2 — Community Cloud Providers
 - [ ] AWS provider package (Secrets Manager, S3) + Fargate/ECS reference deployment
