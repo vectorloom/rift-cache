@@ -5,7 +5,7 @@
 RiftCache is an open-source, Redis-inspired distributed cache built for containerized .NET applications. It ships as a drop-in `IDistributedCache` implementation with a simple REST API, runs anywhere containers run, and is designed to scale from a single self-hosted instance to a multi-tenant enterprise deployment.
 
 - **Self-hosters**: one container, one API key, no cloud lock-in required.
-- **Enterprise teams**: multi-tenancy and pluggable secrets/persistence providers today. Cloud-specific implementations (Azure Key Vault, Blob Storage, etc.) and OpenTelemetry integration are designed for (see [ARCHITECTURE.md](ARCHITECTURE.md)) but not built yet — see [ROADMAP.md](ROADMAP.md) for status.
+- **Enterprise teams**: multi-tenancy, pluggable secrets/persistence providers, and OpenTelemetry (traces + metrics) today. Cloud-specific provider implementations (Azure Key Vault, Blob Storage, etc.) are designed for (see [ARCHITECTURE.md](ARCHITECTURE.md)) but not built yet — see [ROADMAP.md](ROADMAP.md) for status.
 
 > Reference deployment today: **Docker / Podman** — see [Building From Source](#building-from-source-docker--podman) below. Azure Container Apps, AWS (Fargate/ECS), and GCP (Cloud Run) reference deployments are planned, not built yet. Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -141,7 +141,7 @@ gets a `401`, since the server never sees a recognized `X-RiftCache-Api-Key` hea
 Application Code (IDistributedCache — no vendor-specific code)
         │
 RiftCache.Client (NuGet)
-        │  HTTP/JSON
+        │  HTTP/JSON, retry + circuit breaker
         ▼
 RiftCache Service (container — runs anywhere)
    ├─ In-memory store (ConcurrentDictionary, TTL + LRU)
@@ -149,13 +149,15 @@ RiftCache Service (container — runs anywhere)
    │                         Azure Key Vault | AWS Secrets Manager | GCP Secret Manager (planned)
    ├─ IPersistenceProvider → none / memory-only (today)
    │                         Azure Blob | S3 | GCS (planned)
-   └─ OpenTelemetry        → not wired in yet (planned)
+   └─ OpenTelemetry        → traces + metrics, exported via OTLP when
+                              OTEL_EXPORTER_OTLP_ENDPOINT is set — silent otherwise
 ```
 
-The service core has no direct dependency on any single cloud's SDK. Cloud integrations are designed
-to live behind provider interfaces — see [ARCHITECTURE.md](ARCHITECTURE.md) for the interface
-definitions and how to implement a new provider, and [ROADMAP.md](ROADMAP.md) for what's actually
-implemented today versus planned.
+The service core has no direct dependency on any single cloud's SDK. Cloud-specific secret and
+persistence integrations are designed to live behind provider interfaces — see
+[ARCHITECTURE.md](ARCHITECTURE.md) for the interface definitions and how to implement a new
+provider. Observability goes through OpenTelemetry directly, no custom abstraction needed — see
+[ROADMAP.md](ROADMAP.md) for what's implemented today versus planned.
 
 ---
 
