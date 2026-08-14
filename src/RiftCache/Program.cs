@@ -1,4 +1,7 @@
 using Microsoft.Extensions.Options;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using RiftCache.Caching;
 using RiftCache.Endpoints;
 using RiftCache.Options;
@@ -13,8 +16,38 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<ISecretProvider, EnvironmentSecretProvider>();
 builder.Services.AddSingleton<IPersistenceProvider, NullPersistenceProvider>();
 builder.Services.AddSingleton<InMemoryCacheStore>();
-builder.Services.AddSingleton<ICacheStore>(sp => sp.GetRequiredService<InMemoryCacheStore>());
+builder.Services.AddSingleton<CacheMetrics>();
+builder.Services.AddSingleton<ICacheStore>(sp =>
+    new MeteredCacheStore(sp.GetRequiredService<InMemoryCacheStore>(), sp.GetRequiredService<CacheMetrics>()));
 builder.Services.AddHostedService<CacheEvictionService>();
+
+// Only export via OTLP when an endpoint is actually configured -- otherwise a self-hoster who set
+// nothing gets zero telemetry noise (no attempted connections, no connection-refused warnings).
+// Read through IConfiguration, not Environment.GetEnvironmentVariable, for the same reason
+// EnvironmentSecretProvider does: picks up env vars, user secrets, and config files uniformly.
+var otlpEndpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
+
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource.AddService("RiftCache"))
+    .WithTracing(tracing =>
+    {
+        tracing.AddAspNetCoreInstrumentation();
+
+        if (!string.IsNullOrEmpty(otlpEndpoint))
+        {
+            tracing.AddOtlpExporter();
+        }
+    })
+    .WithMetrics(metrics =>
+    {
+        metrics.AddAspNetCoreInstrumentation();
+        metrics.AddMeter(CacheMetrics.MeterName);
+
+        if (!string.IsNullOrEmpty(otlpEndpoint))
+        {
+            metrics.AddOtlpExporter();
+        }
+    });
 
 var app = builder.Build();
 
