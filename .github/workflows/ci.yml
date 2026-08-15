@@ -9,6 +9,14 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    # Azurite backs the AzureBlobPersistenceProvider integration tests -- CONTRIBUTING.md's stated
+    # requirement for cloud provider tests is that they run against a local emulator in CI, not
+    # real cloud resources. Listens on the same localhost:10000 the tests already hardcode.
+    services:
+      azurite:
+        image: mcr.microsoft.com/azure-storage/azurite
+        ports:
+          - 10000:10000
     steps:
       - uses: actions/checkout@v4
 
