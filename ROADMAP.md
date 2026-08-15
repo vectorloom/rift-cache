@@ -1,18 +1,18 @@
 # Roadmap
 
-## Phase 1 — Core + Azure Reference (current focus)
+## Phase 1 — Core + Azure Reference (complete)
 - [x] Core service: in-memory store, TTL/expiration
 - [x] `RiftCache.Client` NuGet package (`IDistributedCache` implementation)
 - [x] Provider interfaces: `ISecretProvider`, `IPersistenceProvider`, OpenTelemetry integration
 - [x] Default providers: `EnvironmentSecretProvider`, `NullPersistenceProvider` (self-host path)
 - [x] Azure reference provider: Key Vault (`ISecretProvider`) — see [docs/providers/azure.md](docs/providers/azure.md)
 - [x] Azure reference provider: Blob Storage (`IPersistenceProvider`) — see [docs/providers/azure.md](docs/providers/azure.md)
-- [x] Azure Container Apps reference deployment (Bicep) + Docker Compose for local dev — see [deployment/azure/bicep](deployment/azure/bicep); memory-only (`NullPersistenceProvider`) in this template
+- [x] Azure Container Apps reference deployment (Bicep) + Docker Compose for local dev — see [deployment/azure/bicep](deployment/azure/bicep); memory-only (`NullPersistenceProvider`) by default, Blob-backed persistence opt-in (see next item)
 - [x] Wire `AzureBlobPersistenceProvider` into the Azure Container Apps reference deployment — composed entry point at `src/RiftCache.Azure` + `deployment/docker/Dockerfile.azure`, opt-in via the Bicep template's `enableBlobPersistence` parameter
 - [x] Single-tenant mode as default; multi-tenant mode as opt-in config
 - [x] v0.1.0 release
 
-## Phase 2 — Community Cloud Providers
+## Phase 2 — Community Cloud Providers (current focus)
 - [ ] AWS provider package (Secrets Manager, S3) + Fargate/ECS reference deployment
 - [ ] GCP provider package (Secret Manager, GCS) + Cloud Run reference deployment
 - [ ] Provider contribution guide finalized (see CONTRIBUTING.md)
