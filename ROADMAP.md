@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Phase 1 — Core + Azure Reference (current focus)
-- [ ] Core service: in-memory store, TTL/expiration, string/hash/list operations
+- [x] Core service: in-memory store, TTL/expiration
 - [x] `RiftCache.Client` NuGet package (`IDistributedCache` implementation)
 - [x] Provider interfaces: `ISecretProvider`, `IPersistenceProvider`, OpenTelemetry integration
 - [x] Default providers: `EnvironmentSecretProvider`, `NullPersistenceProvider` (self-host path)
