@@ -26,7 +26,13 @@ public static class AzureProviderServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(containerUri);
 
-        services.AddSingleton(new BlobContainerClient(containerUri, credential ?? new DefaultAzureCredential()));
+        // Pinned rather than left on the SDK's default (newest) service version: real Azure
+        // Storage supports old API versions for years, so there's no functional downside, and it
+        // means AzureBlobPersistenceProvider works against a local Azurite instance out of the box
+        // -- Azurite rejects requests using an API version newer than it knows about, which the
+        // SDK's floating default triggers as it releases new versions.
+        var options = new BlobClientOptions(BlobClientOptions.ServiceVersion.V2024_08_04);
+        services.AddSingleton(new BlobContainerClient(containerUri, credential ?? new DefaultAzureCredential(), options));
         services.AddSingleton<IPersistenceProvider, AzureBlobPersistenceProvider>();
 
         return services;

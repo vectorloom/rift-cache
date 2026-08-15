@@ -12,6 +12,11 @@ namespace RiftCache.Providers.Azure.Tests;
 /// or the Podman equivalent). No skip-if-unavailable logic -- xUnit v2 doesn't support that
 /// cleanly, and a clear connection-refused failure without Azurite running is more honest than a
 /// silent skip.
+///
+/// BlobClientOptions below pins an explicit service version rather than floating on the SDK's
+/// default (newest) one -- Azurite rejects requests using an API version newer than it knows
+/// about ("--skipApiVersionCheck" works around it locally, but GitHub Actions' `services:` block
+/// has no way to pass that flag to the container, so it must be fixed on the client side instead).
 /// </summary>
 public class AzureBlobPersistenceProviderIntegrationTests : IAsyncLifetime
 {
@@ -26,7 +31,8 @@ public class AzureBlobPersistenceProviderIntegrationTests : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        _container = new BlobContainerClient(AzuriteConnectionString, _containerName);
+        var options = new BlobClientOptions(BlobClientOptions.ServiceVersion.V2024_08_04);
+        _container = new BlobContainerClient(AzuriteConnectionString, _containerName, options);
         await _container.CreateIfNotExistsAsync();
         _provider = new AzureBlobPersistenceProvider(_container);
     }
