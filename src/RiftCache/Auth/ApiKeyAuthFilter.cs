@@ -9,7 +9,7 @@ namespace RiftCache.Auth;
 /// <summary>
 /// Validates the X-RiftCache-Api-Key header against ISecretProvider. In single-tenant mode
 /// (default) the expected secret is RIFTCACHE_API_KEY. In multi-tenant mode each tenant's key
-/// is looked up as RIFTCACHE_API_KEY__{TENANTID}, per ARCHITECTURE_NOTES.md section 2.1.
+/// is looked up as RIFTCACHE_API_KEY__{TENANTID}, per ARCHITECTURE.md's Secrets / Auth section.
 /// </summary>
 public sealed class ApiKeyAuthFilter : IEndpointFilter
 {
