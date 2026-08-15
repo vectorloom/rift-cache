@@ -86,11 +86,15 @@ for diagnosing *why*.
 - **HTTPS only.** `AddAzureBlobPersistenceProvider`'s `TokenCredential` path refuses to construct
   a client against an `http://` URI at all (`Azure.Storage`'s own guard against sending bearer
   tokens unencrypted) — confirmed by running the composed image against a local Azurite over
-  plain HTTP, which throws immediately at startup. This is never a problem in a real deployment
-  (Azure Storage is HTTPS-only anyway), but it does mean this provider can't be exercised
-  end-to-end against local Azurite the way `AzureBlobPersistenceProvider`'s own unit and
+  plain HTTP, which throws immediately at startup. Never a problem in a real deployment (Azure
+  Storage is HTTPS-only anyway), but it does mean this provider can't be exercised end-to-end
+  against a *default* local Azurite the way `AzureBlobPersistenceProvider`'s own unit and
   integration tests do (those construct `BlobContainerClient` directly from an Azurite connection
-  string, bypassing this extension method entirely).
+  string, bypassing this extension method entirely). Azurite can be configured for HTTPS + OAuth
+  (`--cert`/`--key` plus `--oauth basic` — see
+  [Azurite's docs](https://learn.microsoft.com/azure/storage/common/storage-install-azurite#certificate-configuration-https)),
+  which would let `TokenCredential` auth work against it too; RiftCache doesn't set this up or
+  test against it today.
 
 ### Usage
 
