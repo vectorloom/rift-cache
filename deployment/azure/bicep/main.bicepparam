@@ -17,3 +17,8 @@ param riftCacheApiKey = ''
 
 param minReplicas = 1
 param maxReplicas = 3
+
+// Set to true to provision Blob Storage and back the cache with AzureBlobPersistenceProvider
+// instead of memory-only NullPersistenceProvider. If true, containerImage above must point at an
+// image built from deployment/docker/Dockerfile.azure, not the core Dockerfile.
+param enableBlobPersistence = false

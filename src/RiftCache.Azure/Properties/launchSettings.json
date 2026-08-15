@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:5261",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "RIFTCACHE_API_KEY": "dev-key",
+        "RIFTCACHE_BLOB_CONTAINER_URL": "https://example.blob.core.windows.net/riftcache-entries"
+      }
+    },
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:7042;http://localhost:5261",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "RIFTCACHE_API_KEY": "dev-key",
+        "RIFTCACHE_BLOB_CONTAINER_URL": "https://example.blob.core.windows.net/riftcache-entries"
+      }
+    }
+  }
+}

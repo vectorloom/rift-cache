@@ -8,7 +8,7 @@
 - [x] Azure reference provider: Key Vault (`ISecretProvider`) — see [docs/providers/azure.md](docs/providers/azure.md)
 - [x] Azure reference provider: Blob Storage (`IPersistenceProvider`) — see [docs/providers/azure.md](docs/providers/azure.md)
 - [x] Azure Container Apps reference deployment (Bicep) + Docker Compose for local dev — see [deployment/azure/bicep](deployment/azure/bicep); memory-only (`NullPersistenceProvider`) in this template
-- [ ] Wire `AzureBlobPersistenceProvider` into the Azure Container Apps reference deployment — needs `Program.cs` extracted into reusable `AddRiftCacheCore()`/`MapRiftCacheCore()` extensions first, plus a second composed entry point + Dockerfile that layers the Azure providers on top of the default
+- [x] Wire `AzureBlobPersistenceProvider` into the Azure Container Apps reference deployment — composed entry point at `src/RiftCache.Azure` + `deployment/docker/Dockerfile.azure`, opt-in via the Bicep template's `enableBlobPersistence` parameter
 - [x] Single-tenant mode as default; multi-tenant mode as opt-in config
 - [x] v0.1.0 release
 
