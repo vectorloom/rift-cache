@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <RootNamespace>RiftCache.Azure</RootNamespace>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="RiftCache.Azure.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RiftCache\RiftCache.csproj" />
+    <ProjectReference Include="..\RiftCache.Providers.Azure\RiftCache.Providers.Azure.csproj" />
+  </ItemGroup>
+
+</Project>

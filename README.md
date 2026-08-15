@@ -133,6 +133,29 @@ Note the header is `X-RiftCache-Api-Key`, **not** `RIFTCACHE_API_KEY` — that n
 server-side env var above. Sending `RIFTCACHE_API_KEY` as a header (an easy mix-up in Postman)
 gets a `401`, since the server never sees a recognized `X-RiftCache-Api-Key` header at all.
 
+### Debugging
+
+Both entry points — `src/RiftCache` (core) and `src/RiftCache.Azure` (composed, Blob-backed
+persistence) — ship a `Properties/launchSettings.json`, so **VS Code's Run and Debug (F5)** works
+without extra setup: open either project's `Program.cs`, set a breakpoint, and run its `http` or
+`https` launch profile.
+
+`RiftCache.Azure`'s profile prefills `RIFTCACHE_API_KEY=dev-key` and a dummy
+`RIFTCACHE_BLOB_CONTAINER_URL` so the app clears its fail-fast startup check and you can step
+through the wiring code — but since `AddAzureBlobPersistenceProvider`'s `TokenCredential` path
+requires a real, HTTPS-reachable Azure Storage endpoint (see
+[docs/providers/azure.md](docs/providers/azure.md)), any breakpoint that depends on an actual
+blob read/write won't be reachable through the dummy URL. For that, debug through
+`RiftCache.Providers.Azure.Tests` instead, which talks to a local Azurite container directly.
+
+No launch config? Run with the env vars set and attach:
+
+```bash
+RIFTCACHE_API_KEY=dev-key dotnet run --project src/RiftCache
+```
+
+then VS Code's Run → Attach to Process, and pick the running process.
+
 ---
 
 ## Architecture at a Glance

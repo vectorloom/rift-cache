@@ -83,6 +83,14 @@ for diagnosing *why*.
   it both reads and writes, unlike the read-only Key Vault provider.
 - Same `DefaultAzureCredential` story as Key Vault: Managed Identity in Azure, `az login` or a
   service principal locally, no RiftCache-specific credential config.
+- **HTTPS only.** `AddAzureBlobPersistenceProvider`'s `TokenCredential` path refuses to construct
+  a client against an `http://` URI at all (`Azure.Storage`'s own guard against sending bearer
+  tokens unencrypted) — confirmed by running the composed image against a local Azurite over
+  plain HTTP, which throws immediately at startup. This is never a problem in a real deployment
+  (Azure Storage is HTTPS-only anyway), but it does mean this provider can't be exercised
+  end-to-end against local Azurite the way `AzureBlobPersistenceProvider`'s own unit and
+  integration tests do (those construct `BlobContainerClient` directly from an Azurite connection
+  string, bypassing this extension method entirely).
 
 ### Usage
 
@@ -100,7 +108,16 @@ services.AddAzureBlobPersistenceProvider(
 
 Registers `IPersistenceProvider` as `AzureBlobPersistenceProvider`, replacing the default
 `NullPersistenceProvider`. Same composition note as Key Vault: this doesn't touch
-`src/RiftCache/Program.cs`, since the core service can't reference Azure SDK types at all.
+`src/RiftCache/Program.cs`, since the core service can't reference Azure SDK types at all — it's
+called from a separate composed entry point instead.
+
+**`src/RiftCache.Azure`** is that composed entry point, already built and ready to deploy: it calls
+`AddRiftCacheCore()` and then this method, reading the container URL from a
+`RIFTCACHE_BLOB_CONTAINER_URL` environment variable (failing fast at startup if it's unset). Build
+it via `deployment/docker/Dockerfile.azure`, and deploy it with the Bicep reference template's
+`enableBlobPersistence = true` — see [deployment/azure/bicep](../../deployment/azure/bicep). Use
+this as a starting point if you want a similarly composed entry point that also wires in
+`AzureKeyVaultSecretProvider` or your own additional providers.
 
 ### How entries are stored
 

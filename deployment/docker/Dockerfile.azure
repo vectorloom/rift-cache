@@ -1,0 +1,45 @@
+# Builds and runs the Azure-flavored RiftCache entry point (src/RiftCache.Azure), which layers
+# AzureBlobPersistenceProvider on top of the core service via AddRiftCacheCore(). Unlike
+# deployment/docker/Dockerfile, this image DOES carry Azure SDK dependencies -- that's the point,
+# not an oversight. Requires RIFTCACHE_BLOB_CONTAINER_URL at runtime (e.g.
+# https://<account>.blob.core.windows.net/<container>); the app fails fast at startup without it.
+# Use the core Dockerfile instead if you only need memory-only caching.
+# Build context must be the repo root, e.g.:
+#   docker build -f deployment/docker/Dockerfile.azure -t riftcache/riftcache-azure:latest .
+#   podman build -f deployment/docker/Dockerfile.azure -t riftcache/riftcache-azure:latest .
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+# Restore first, on just the files restore depends on, so source-only edits don't bust the
+# Docker layer cache and force a full package re-download on every build.
+COPY Directory.Build.props ./
+COPY src/RiftCache/RiftCache.csproj src/RiftCache/
+COPY src/RiftCache.Providers.Azure/RiftCache.Providers.Azure.csproj src/RiftCache.Providers.Azure/
+COPY src/RiftCache.Azure/RiftCache.Azure.csproj src/RiftCache.Azure/
+RUN dotnet restore src/RiftCache.Azure/RiftCache.Azure.csproj
+
+COPY src/RiftCache/ src/RiftCache/
+COPY src/RiftCache.Providers.Azure/ src/RiftCache.Providers.Azure/
+COPY src/RiftCache.Azure/ src/RiftCache.Azure/
+RUN dotnet publish src/RiftCache.Azure/RiftCache.Azure.csproj \
+    --configuration Release \
+    --no-restore \
+    --output /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+
+# Runs as the base image's built-in non-root user rather than root.
+USER $APP_UID
+WORKDIR /app
+
+# Matches the README Quick Start's `-p 8080:8080`. RIFTCACHE_API_KEY and
+# RIFTCACHE_BLOB_CONTAINER_URL are intentionally not set here -- they're read from the
+# container's environment at runtime, so they're supplied via `docker run -e` /
+# `podman run -e` / the Bicep deployment, never baked into the image.
+ENV ASPNETCORE_HTTP_PORTS=8080
+EXPOSE 8080
+
+COPY --from=build /app/publish .
+
+ENTRYPOINT ["dotnet", "RiftCache.Azure.dll"]
