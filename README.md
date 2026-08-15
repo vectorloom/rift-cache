@@ -5,7 +5,7 @@
 RiftCache is an open-source, Redis-inspired distributed cache built for containerized .NET applications. It ships as a drop-in `IDistributedCache` implementation with a simple REST API, runs anywhere containers run, and is designed to scale from a single self-hosted instance to a multi-tenant enterprise deployment.
 
 - **Self-hosters**: one container, one API key, no cloud lock-in required.
-- **Enterprise teams**: multi-tenancy, pluggable secrets/persistence providers, and OpenTelemetry (traces + metrics) today. Cloud-specific provider implementations (Azure Key Vault, Blob Storage, etc.) are designed for (see [ARCHITECTURE.md](ARCHITECTURE.md)) but not built yet — see [ROADMAP.md](ROADMAP.md) for status.
+- **Enterprise teams**: multi-tenancy, pluggable secrets/persistence providers, OpenTelemetry (traces + metrics), and Azure reference providers (Key Vault, Blob Storage — see [docs/providers/azure.md](docs/providers/azure.md)) today. AWS and GCP implementations of the same interfaces are designed for (see [ARCHITECTURE.md](ARCHITECTURE.md)) but not built yet — contributions welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 > Reference deployment today: **Docker / Podman** — see [Building From Source](#building-from-source-docker--podman) below. Azure Container Apps, AWS (Fargate/ECS), and GCP (Cloud Run) reference deployments are planned, not built yet. Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -145,10 +145,10 @@ RiftCache.Client (NuGet)
         ▼
 RiftCache Service (container — runs anywhere)
    ├─ In-memory store (ConcurrentDictionary, TTL + LRU)
-   ├─ ISecretProvider      → env vars, user secrets, mounted files (today)
-   │                         Azure Key Vault | AWS Secrets Manager | GCP Secret Manager (planned)
-   ├─ IPersistenceProvider → none / memory-only (today)
-   │                         Azure Blob | S3 | GCS (planned)
+   ├─ ISecretProvider      → env vars, user secrets, mounted files | Azure Key Vault (today)
+   │                         AWS Secrets Manager | GCP Secret Manager (planned)
+   ├─ IPersistenceProvider → none / memory-only | Azure Blob (today)
+   │                         S3 | GCS (planned)
    └─ OpenTelemetry        → traces + metrics, exported via OTLP when
                               OTEL_EXPORTER_OTLP_ENDPOINT is set — silent otherwise
 ```
@@ -166,6 +166,7 @@ provider. Observability goes through OpenTelemetry directly, no custom abstracti
 | Doc | Purpose |
 |---|---|
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Provider abstraction pattern, deployment layout, multi-tenancy design |
+| [docs/providers/azure.md](docs/providers/azure.md) | Configuring `AzureKeyVaultSecretProvider` and `AzureBlobPersistenceProvider` |
 | [ENTERPRISE_DEPLOYMENT.md](ENTERPRISE_DEPLOYMENT.md) | Running RiftCache as shared, centrally-owned infrastructure for multiple teams |
 | [ROADMAP.md](ROADMAP.md) | Phased plan — core, Azure reference, AWS/GCP providers, enterprise features |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to add a cloud provider, submit PRs, project conventions |
