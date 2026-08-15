@@ -5,7 +5,8 @@
 - [x] `RiftCache.Client` NuGet package (`IDistributedCache` implementation)
 - [x] Provider interfaces: `ISecretProvider`, `IPersistenceProvider`, OpenTelemetry integration
 - [x] Default providers: `EnvironmentSecretProvider`, `NullPersistenceProvider` (self-host path)
-- [ ] Azure reference providers: Key Vault, Blob Storage
+- [x] Azure reference provider: Key Vault (`ISecretProvider`) — see [docs/providers/azure.md](docs/providers/azure.md)
+- [ ] Azure reference provider: Blob Storage (`IPersistenceProvider`)
 - [ ] Azure Container Apps reference deployment (Bicep) + Docker Compose for local dev
 - [x] Single-tenant mode as default; multi-tenant mode as opt-in config
 - [x] v0.1.0 release
