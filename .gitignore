@@ -427,3 +427,10 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Compiled ARM JSON from `az bicep build` / `az bicep build-params` -- generated from the .bicep
+# / .bicepparam sources under deployment/, never hand-edited or meant to be committed.
+deployment/**/*.json
+
+# Local copies of example .bicepparam files with real values filled in.
+deployment/**/*.local.bicepparam

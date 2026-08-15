@@ -7,7 +7,7 @@ RiftCache is an open-source, Redis-inspired distributed cache built for containe
 - **Self-hosters**: one container, one API key, no cloud lock-in required.
 - **Enterprise teams**: multi-tenancy, pluggable secrets/persistence providers, OpenTelemetry (traces + metrics), and Azure reference providers (Key Vault, Blob Storage — see [docs/providers/azure.md](docs/providers/azure.md)) today. AWS and GCP implementations of the same interfaces are designed for (see [ARCHITECTURE.md](ARCHITECTURE.md)) but not built yet — contributions welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-> Reference deployment today: **Docker / Podman** — see [Building From Source](#building-from-source-docker--podman) below. Azure Container Apps, AWS (Fargate/ECS), and GCP (Cloud Run) reference deployments are planned, not built yet. Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+> Reference deployments today: **Docker / Podman** — see [Building From Source](#building-from-source-docker--podman) below — and **Azure Container Apps** (Bicep) — see [deployment/azure/bicep](deployment/azure/bicep). AWS (Fargate/ECS) and GCP (Cloud Run) reference deployments are planned, not built yet. Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
@@ -167,6 +167,7 @@ provider. Observability goes through OpenTelemetry directly, no custom abstracti
 |---|---|
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Provider abstraction pattern, deployment layout, multi-tenancy design |
 | [docs/providers/azure.md](docs/providers/azure.md) | Configuring `AzureKeyVaultSecretProvider` and `AzureBlobPersistenceProvider` |
+| [deployment/azure/bicep](deployment/azure/bicep) | Azure Container Apps reference deployment (Bicep) |
 | [ENTERPRISE_DEPLOYMENT.md](ENTERPRISE_DEPLOYMENT.md) | Running RiftCache as shared, centrally-owned infrastructure for multiple teams |
 | [ROADMAP.md](ROADMAP.md) | Phased plan — core, Azure reference, AWS/GCP providers, enterprise features |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to add a cloud provider, submit PRs, project conventions |
