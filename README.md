@@ -36,7 +36,7 @@ RiftCache is a distributed cache built to slot into infrastructure you already r
 ## Quick Start (Self-Hosted)
 
 ```bash
-docker run --name riftcache -p 8080:8080 -e RIFTCACHE_API_KEY=dev-key riftcache/riftcache:latest
+docker run --name riftcache -p 8080:8080 -e RIFTCACHE_API_KEY=dev-key ghcr.io/vectorloom/rift-cache:latest
 ```
 
 > **Two different names, easy to mix up when testing manually:** `RIFTCACHE_API_KEY` above is the
@@ -44,9 +44,10 @@ docker run --name riftcache -p 8080:8080 -e RIFTCACHE_API_KEY=dev-key riftcache/
 > Callers authenticate with the **HTTP header** `X-RiftCache-Api-Key` instead — see the curl
 > example under [Building From Source](#building-from-source-docker--podman) below.
 
-No published image yet — until there is, build it from source (below). The image is a
-multi-stage build of just `src/RiftCache`, so it stays cloud-agnostic: no Azure/AWS/GCP
-SDKs baked in, per [ARCHITECTURE.md](ARCHITECTURE.md).
+Published to GHCR on every version tag (`ghcr.io/vectorloom/rift-cache:vX.Y.Z`, plus a rolling
+`:latest`) — or build it from source (below). The image is a multi-stage build of just
+`src/RiftCache`, so it stays cloud-agnostic: no Azure/AWS/GCP SDKs baked in, per
+[ARCHITECTURE.md](ARCHITECTURE.md).
 
 ```csharp
 services.AddRiftCache(options =>
